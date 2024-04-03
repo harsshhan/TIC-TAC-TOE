@@ -2,11 +2,11 @@ import random
 #displaying board
 def play_board(board):
     print('\n')
-    print(board[1]+'|'+board[2]+'|'+board[3])
+    print(board[0]+'|'+board[1]+'|'+board[2])
     print('-'*5)
-    print(board[4]+'|'+board[5]+'|'+board[6])
+    print(board[3]+'|'+board[4]+'|'+board[5])
     print('-'*5)
-    print(board[7]+'|'+board[8]+'|'+board[9])
+    print(board[6]+'|'+board[7]+'|'+board[8])
 
 #getting input from the user and assigning the marker to player
 def marker():
@@ -28,14 +28,14 @@ def place_marker(board,marker,position):
 
 #checking if the player win or not
 def win_check(board,mark):
-    return ((board[7] == mark and board[8] == mark and board[9] == mark) or # across the top
-    (board[4] == mark and board[5] == mark and board[6] == mark) or # across the middle
-    (board[1] == mark and board[2] == mark and board[3] == mark) or # across the bottom
+    return ((board[6] == mark and board[7] == mark and board[8] == mark) or # across the top
+    (board[3] == mark and board[4] == mark and board[5] == mark) or # across the middle
+    (board[0] == mark and board[1] == mark and board[2] == mark) or # across the bottom
+    (board[6] == mark and board[3] == mark and board[0] == mark) or # down the middle
     (board[7] == mark and board[4] == mark and board[1] == mark) or # down the middle
-    (board[8] == mark and board[5] == mark and board[2] == mark) or # down the middle
-    (board[9] == mark and board[6] == mark and board[3] == mark) or # down the right side
-    (board[7] == mark and board[5] == mark and board[3] == mark) or # diagonal
-    (board[9] == mark and board[5] == mark and board[1] == mark)) # diagonal
+    (board[8] == mark and board[5] == mark and board[2] == mark) or # down the right side
+    (board[6] == mark and board[4] == mark and board[2] == mark) or # diagonal
+    (board[8] == mark and board[4] == mark and board[0] == mark)) # diagonal
 
 def space_check(board):
     if ' ' in board:
@@ -48,7 +48,7 @@ ch=True
 while ch:
     print("Welcome to Tic Tac Toe")
     #initialising the board
-    board=[' ']*10 
+    board=[' ']*9
     game=True
     turn=random.randint(1,2)
     marker()
@@ -76,6 +76,7 @@ while ch:
                     else:
                         print("Match draw")
                         game=False
+                        ch=False
             else:
                 print("Entered position is already occupied")
                 turn=1
@@ -97,6 +98,7 @@ while ch:
                     else:
                         print("Match draw")
                         game=False
+                        ch=False
             else:
                 print("Entered position is already occupied")
                 turn=2

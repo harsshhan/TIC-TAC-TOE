@@ -1,104 +1,99 @@
+
 import random
-#displaying board
-def play_board(board):
-    print('\n')
-    print(board[0]+'|'+board[1]+'|'+board[2])
-    print('-'*5)
-    print(board[3]+'|'+board[4]+'|'+board[5])
-    print('-'*5)
-    print(board[6]+'|'+board[7]+'|'+board[8])
 
-#getting input from the user and assigning the marker to player
-def marker():
-    global p1,p2
-    p1=input("Player 1 : Enter your marker 'X' or 'O': ").upper()
-    while p1.upper()=='X' or p1.upper()=='O':
-        if p1=='X':
-            p2='O'
+
+class TicTacToe:
+    def __init__(self,board) -> None:
+        self.board=board
+    
+
+    #getting input from the user and assigning the marker to player
+    def marker(self):
+        while True:
+            player1_marker = input("Player 1: Enter your marker 'X' or 'O': ").upper()
+            if player1_marker in ('X', 'O'):
+                break
+            else:
+                print("Please enter 'X' or 'O'.")
+
+        if player1_marker == 'X':
+            player2_marker = 'O'
         else:
-            p2='X'
-        break
-    else:
-        print("Enter the correct marker: ")
-        marker()
+            player2_marker = 'X'
+        print(f"Player 1 : {player1_marker}")
+        print(f"Player 2 : {player2_marker}")
+        
+        return player1_marker,player2_marker
 
-#marking the players marker (X or O)
-def place_marker(board,marker,position):
-    board[position]=marker
+    #displaying board
+    def show_board(self):
+        print('\n')
+        print(self.board[0]+'|'+self.board[1]+'|'+self.board[2])
+        print('-'*5)
+        print(self.board[3]+'|'+self.board[4]+'|'+self.board[5])
+        print('-'*5)
+        print(self.board[6]+'|'+self.board[7]+'|'+self.board[8])
 
-#checking if the player win or not
-def win_check(board,mark):
-    return ((board[6] == mark and board[7] == mark and board[8] == mark) or # across the top
-    (board[3] == mark and board[4] == mark and board[5] == mark) or # across the middle
-    (board[0] == mark and board[1] == mark and board[2] == mark) or # across the bottom
-    (board[6] == mark and board[3] == mark and board[0] == mark) or # down the middle
-    (board[7] == mark and board[4] == mark and board[1] == mark) or # down the middle
-    (board[8] == mark and board[5] == mark and board[2] == mark) or # down the right side
-    (board[6] == mark and board[4] == mark and board[2] == mark) or # diagonal
-    (board[8] == mark and board[4] == mark and board[0] == mark)) # diagonal
+    # #marking the players marker (X or O)
+    # def place_marker(self,marker,position):
+    #     self.board[position]=marker
 
-def space_check(board):
-    if ' ' in board:
-        return True
-    else:
+    def win_check(self, mark):
+        # Define the winning combinations as tuples of indices
+        win_combinations = [
+            (6, 7, 8),  # across the top
+            (3, 4, 5),  # across the middle
+            (0, 1, 2),  # across the bottom
+            (6, 3, 0),  # down the left side
+            (7, 4, 1),  # down the middle
+            (8, 5, 2),  # down the right side
+            (6, 4, 2),  # diagonal
+            (8, 4, 0)   # diagonal
+        ]
+        
+        # Check if any of the winning combinations contain all 'mark'
+        for combination in win_combinations:
+            if all(self.board[i] == mark for i in combination):
+                return True
         return False
 
-
-ch=True
-while ch:
-    print("Welcome to Tic Tac Toe")
-    #initialising the board
-    board=[' ']*9
-    game=True
-    turn=random.randint(1,2)
-    marker()
-    print(f"Player 1 : {p1}")
-    print(f"Player 2 : {p2}")
-    print(f"Player {turn} go first")
-    play_board(board)
-    while game:
-        
-        #player1
-        if turn==1:
-            print('\n')
-            position=int(input("Player 1 : Enter the position: "))
-            if board[position]==' ':
-                place_marker(board,p1,position)
-                play_board(board)
-
-                if win_check(board,p1):
-                    print("Congratulations Player 1 won the game!")
-                    ch=False
-                    game=False
-                else:
-                    if space_check(board):
-                        turn=2
-                    else:
-                        print("Match draw")
-                        game=False
-                        ch=False
-            else:
-                print("Entered position is already occupied")
-                turn=1
-        #player2
+    #check if any space available in board
+    def space_check(self):
+        if ' ' in self.board:
+            return True
         else:
-            print('\n')
-            position=int(input("Player 2 : Enter the position: "))
-            if board[position]==' ':
-                place_marker(board,p2,position)
-                play_board(board)
-
-                if win_check(board,p2):
-                    print("Congratulations Player 2 won the game!")
-                    ch=False
-                    game=False
+            return False
+        
+    #player turn --> choosing the position in board
+    def player_turn(self, player):
+        while True:
+            try:
+                position = int(input(f"Player {player}: Enter the position (1-9): ")) - 1
+                if 0 <= position <= 8 and self.board[position] == ' ':
+                    self.board[position] = player
+                    break
                 else:
-                    if space_check(board):
-                        turn=1
-                    else:
-                        print("Match draw")
-                        game=False
-                        ch=False
-            else:
-                print("Entered position is already occupied")
-                turn=2
+                    print("Invalid position. Try again.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+        
+        
+board=[' ']*9
+obj=TicTacToe(board)
+players=['X','O']
+curr_palyer=random.choice(players)
+person1,person2=obj.marker()
+game=True
+while game:
+    if obj.space_check():
+        obj.show_board()
+        obj.player_turn(curr_palyer)
+        if obj.win_check(curr_palyer):
+            print(f"Congratulations! {curr_palyer} won the game")
+            break
+        else:
+            curr_palyer=players[(players.index(curr_palyer)+1)%2]
+        
+    else:
+        print("-"*20+"[Match Draw]")
+        game=False
